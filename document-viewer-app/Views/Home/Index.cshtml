@@ -2,13 +2,6 @@
     ViewData["Title"] = "Home Page";
 }
 
-
-
-<h1>Bienvenido a mi aplicación</h1>
-<p>Ingrese el nombre del archivo que desea descargar:</p>
-<input type="text" id="archivo" />
-<button id="btnDescargar">Descargar</button>
-
 <link href="~/node_modules/devextreme/dist/css/dx.light.css" rel="stylesheet" />
 <link href="~/node_modules/devexpress-richedit/dist/dx.richedit.css" rel="stylesheet" />
 
@@ -26,13 +19,9 @@ you should register the pdfkit library before control script registration.*@
 
 @section Scripts {
     <script>
-        const archivoInput = document.getElementById('archivo');
-        const btnDescargar = document.getElementById('btnDescargar');
-        btnDescargar.addEventListener('click', () => {
-            const nombreArchivo = archivoInput.value;
-            const urlDescarga = `https://bconnectstoragetest.blob.core.windows.net/temp/${nombreArchivo}`;
-            window.location.href = `/Home/DescargarArchivo?nombreArchivo=${nombreArchivo}&urlDescarga=${urlDescarga}`;
-        });
+        const nombreArchivo = "Documento.docx";
+        const urlDescarga = `https://bconnectstoragetest.blob.core.windows.net/temp/${nombreArchivo}`;
+        window.location.href = `/Home/DescargarArchivo?nombreArchivo=${nombreArchivo}&urlDescarga=${urlDescarga}`;
     </script>
 }
 
