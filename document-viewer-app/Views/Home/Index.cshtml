@@ -44,5 +44,5 @@ you should register the pdfkit library before control script registration.*@
     .Ribbon(ribbon => ribbon
         .ActiveTabIndex(0)
     )
-    .Open("ArchivosTemporales/Documento.docx")
+    .Open((System.Func<System.IO.Stream>)(() => new System.IO.MemoryStream(Model.DocumentBytes)), (DevExpress.AspNetCore.RichEdit.DocumentFormat)Model.DocumentFormat)
 )

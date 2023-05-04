@@ -1,6 +1,7 @@
-﻿using document_viewer_app.Models;
+﻿using DevExpress.XtraRichEdit;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using document_viewer_app.Models;
 
 namespace document_viewer_app.Controllers
 {
@@ -15,7 +16,21 @@ namespace document_viewer_app.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            string filePath = @"ArchivosTemporales/Documento.docx";
+            using (var stream = new FileStream(filePath, FileMode.Open))
+            {
+                var server = new RichEditDocumentServer();
+                server.LoadDocument(stream, DocumentFormat.OpenXml);
+                var model = new DocumentInfo();
+                using (var ms = new MemoryStream())
+                {
+                    server.SaveDocument(ms, DocumentFormat.OpenXml);
+                    model.DocumentBytes = ms.ToArray();
+                }
+                model.DocumentFormat = (int)DevExpress.AspNetCore.RichEdit.DocumentFormat.OpenXml;
+                model.DocumentName = "NombreDelArchivo.docx";
+                return View(model);
+            }
         }
 
         public async Task<IActionResult> DescargarArchivo(string nombreArchivo, string urlDescarga)
