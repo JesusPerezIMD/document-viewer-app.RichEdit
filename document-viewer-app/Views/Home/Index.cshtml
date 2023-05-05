@@ -13,13 +13,21 @@ you should register the pdfkit library before control script registration.*@
 @*<script src="~/node_modules/devexpress-richedit/dist/pdfkit.js"></script>*@
 <script src="~/node_modules/devexpress-richedit/dist/dx.richedit.js"></script>
 
-@section Scripts {
-    <script>
-        const nombreArchivo = "Documento.docx";
-        const urlDescarga = `https://bconnectstoragetest.blob.core.windows.net/temp/${nombreArchivo}`;
-        window.location.href = `/Home/DescargarArchivo?nombreArchivo=${nombreArchivo}&urlDescarga=${urlDescarga}`;
-    </script>
-}
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var nombreArchivo = "Documento.docx";
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", "@Url.Action("Index", "Controlador")?nombreArchivo=" + encodeURIComponent(nombreArchivo));
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                // handle success
+            } else {
+                // handle error
+            }
+        };
+        xhr.send();
+    });
+</script>
 
 @(Html.DevExpress().RichEdit("richEdit")
     .Width("100%")
@@ -46,3 +54,4 @@ you should register the pdfkit library before control script registration.*@
     )
     .Open((System.Func<System.IO.Stream>)(() => new System.IO.MemoryStream(Model.DocumentBytes)), (DevExpress.AspNetCore.RichEdit.DocumentFormat)Model.DocumentFormat)
 )
+

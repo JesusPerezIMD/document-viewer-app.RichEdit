@@ -7,55 +7,52 @@ namespace document_viewer_app.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ILogger<HomeController> _logger;
 
-        private readonly IHostApplicationLifetime _appLifetime;
-
-        public HomeController(IHostApplicationLifetime appLifetime)
+        public HomeController(ILogger<HomeController> logger)
         {
-            _appLifetime = appLifetime;
+            _logger = logger;
         }
-        public IActionResult Index()
+
+        public async Task<IActionResult> Index(string nombreArchivo = "Documento.docx")
         {
-            string filePath = @"ArchivosTemporales/Documento.docx";
-            using (var stream = new FileStream(filePath, FileMode.Open))
+            if (string.IsNullOrEmpty(nombreArchivo))
             {
-                var server = new RichEditDocumentServer();
-                server.LoadDocument(stream, DocumentFormat.OpenXml);
-                var model = new DocumentInfo();
-                using (var ms = new MemoryStream())
+                // Manejo del caso en que no se proporciona un nombre de archivo
+                return Content("Debe proporcionar un nombre de archivo");
+            }
+
+            string fileUrl = $"https://bconnectstoragetest.blob.core.windows.net/temp/{nombreArchivo}";
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(fileUrl);
+                if (response.IsSuccessStatusCode)
                 {
-                    server.SaveDocument(ms, DocumentFormat.OpenXml);
-                    model.DocumentBytes = ms.ToArray();
+                    var content = await response.Content.ReadAsByteArrayAsync();
+                    var server = new RichEditDocumentServer();
+                    server.LoadDocument(new MemoryStream(content), DocumentFormat.OpenXml);
+                    var model = new DocumentInfo();
+                    model.DocumentBytes = content;
+                    model.DocumentFormat = (int)DevExpress.AspNetCore.RichEdit.DocumentFormat.OpenXml;
+                    model.DocumentName = nombreArchivo;
+                    return View(model);
                 }
-                model.DocumentFormat = (int)DevExpress.AspNetCore.RichEdit.DocumentFormat.OpenXml;
-                model.DocumentName = "NombreDelArchivo.docx";
-                return View(model);
+                else
+                {
+                    return Content("Error al descargar el archivo");
+                }
             }
         }
 
-        public async Task<IActionResult> DescargarArchivo(string nombreArchivo, string urlDescarga)
+        public IActionResult Privacy()
         {
-            // Crear una instancia de HttpClient
-            using var httpClient = new HttpClient();
+            return View();
+        }
 
-            // Descargar el archivo y almacenarlo temporalmente en el proyecto
-            var rutaArchivo = $"ArchivosTemporales/{nombreArchivo}";
-            var respuesta = await httpClient.GetAsync(urlDescarga);
-            var contenidoArchivo = await respuesta.Content.ReadAsByteArrayAsync();
-            System.IO.File.WriteAllBytes(rutaArchivo, contenidoArchivo);
-
-            // Establecer un método de devolución de llamada para eliminar el archivo cuando se cierre el proyecto
-            _appLifetime.ApplicationStopped.Register(() =>
-            {
-                if (System.IO.File.Exists(rutaArchivo))
-                {
-                    System.IO.File.Delete(rutaArchivo);
-                }
-            });
-
-            // Descargar el archivo al navegador del usuario
-            var stream = new FileStream(rutaArchivo, FileMode.Open);
-            return File(stream, "application/octet-stream", nombreArchivo);
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }
