@@ -29,13 +29,13 @@ namespace document_viewer_app.Controllers
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsByteArrayAsync();
-                    var server = new RichEditDocumentServer();
-                    server.LoadDocument(new MemoryStream(content), DocumentFormat.OpenXml);
-                    var model = new DocumentInfo();
-                    model.DocumentBytes = content;
-                    model.DocumentFormat = (int)DevExpress.AspNetCore.RichEdit.DocumentFormat.OpenXml;
-                    model.DocumentName = nombreArchivo;
-                    return View(model);
+                    //var server = new RichEditDocumentServer();
+                    //server.LoadDocument(new MemoryStream(content), DocumentFormat.OpenXml);
+                    //var model = new DocumentInfo();
+                    //model.DocumentBytes = content;
+                    //model.DocumentFormat = (int)DevExpress.AspNetCore.RichEdit.DocumentFormat.OpenXml;
+                    //model.DocumentName = nombreArchivo;
+                    return View(content);
                 }
                 else
                 {

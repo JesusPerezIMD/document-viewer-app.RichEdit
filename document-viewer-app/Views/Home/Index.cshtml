@@ -15,7 +15,8 @@ you should register the pdfkit library before control script registration.*@
 
 @(Html.DevExpress().RichEdit("richEdit")
     .Width("100%")
-    .Height(800)
+    .Height(975)
+
     .AutoCorrect(a => a
         .CorrectTwoInitialCapitals(true)
         .ReplaceTextAsYouType(true)
@@ -34,8 +35,8 @@ you should register the pdfkit library before control script registration.*@
         .Color(System.Drawing.Color.Blue)
     )
     .Ribbon(ribbon => ribbon
-        .ActiveTabIndex(0)
+        .Visible(false)
     )
-    .Open((System.Func<System.IO.Stream>)(() => new System.IO.MemoryStream(Model.DocumentBytes)), (DevExpress.AspNetCore.RichEdit.DocumentFormat)Model.DocumentFormat)
+    .Open(()=>(byte[])Model, DevExpress.AspNetCore.RichEdit.DocumentFormat.OpenXml)
 )
 
