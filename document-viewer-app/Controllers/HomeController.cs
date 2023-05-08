@@ -14,7 +14,7 @@ namespace document_viewer_app.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index(string nombreArchivo = "Documento.docx")
+        public async Task<IActionResult> RichEdit(string nombreArchivo = "Documento.docx")
         {
             if (string.IsNullOrEmpty(nombreArchivo))
             {

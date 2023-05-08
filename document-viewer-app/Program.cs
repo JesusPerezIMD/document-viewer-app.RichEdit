@@ -31,7 +31,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    name: "RichEdit",
+    pattern: "{controller=Home}/{action=RichEdit}/{id?}");
 
 app.Run();
