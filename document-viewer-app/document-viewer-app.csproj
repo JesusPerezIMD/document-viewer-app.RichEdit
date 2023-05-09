@@ -9,7 +9,6 @@
 
   <ItemGroup>
     <PackageReference Include="DevExpress.AspNetCore.RichEdit" Version="22.1.6" />
-    <PackageReference Include="DevExpress.RichEdit.Core" Version="22.1.6" />
   </ItemGroup>
 
 </Project>
